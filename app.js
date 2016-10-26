@@ -25,6 +25,7 @@ let sslOptions;
 notifier.notify();
 
 try {
+  // eslint-disable-next-line import/no-unresolved
   config = utils.deepmerge(require('./config.default'), require('./config'));
 } catch (e) {
   if (e.code === 'MODULE_NOT_FOUND') {
@@ -47,6 +48,8 @@ if (config.options.console) {
 
 commander
   .version(require('./package').version)
+  .option('-H, --host <host>', 'hostname or adress')
+  .option('-P, --dbport <host>', 'port of the db')
   .option('-u, --username <username>', 'username for authentication')
   .option('-p, --password <password>', 'password for authentication')
   .option('-a, --admin', 'enable authentication as admin')
@@ -76,6 +79,9 @@ if (commander.username && commander.password) {
 
   config.useBasicAuth = false;
 }
+
+config.mongodb.server = commander.host || config.mongodb.server;
+config.mongodb.port = commander.dbport || config.mongodb.port;
 
 config.site.port = commander.port || config.site.port;
 
